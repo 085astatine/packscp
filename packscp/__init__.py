@@ -47,7 +47,7 @@ def pack(target_list, logger=None):
     temp_directory.mkdir()
     # create hash table
     table_file = temp_directory.joinpath(table_file_name)
-    with table_file.open(mode='w') as table:
+    with table_file.open(mode='w', encoding='utf-8') as table:
         for key in sorted(hash_table.keys(), key=lambda x: x.hexdigest()):
             table.write('{0}\t{1}\n'.format(
                     key.hexdigest(),
@@ -80,7 +80,7 @@ def unpack(target, destination=None, logger=None):
     # open table
     hash_table = {}
     table_file = target.joinpath(table_file_name)
-    with table_file.open() as table:
+    with table_file.open(encoding='utf-8') as table:
         for line in table:
             hashed, path = line.rstrip().split('\t', maxsplit=1)
             logger.info('{0} - "{1}"'.format(hashed, path))
