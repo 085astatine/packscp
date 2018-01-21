@@ -22,6 +22,7 @@ def pack(target_file_list, logger=None):
     logger.info('mkdir {0}'.format(temp_directory))
     temp_directory.mkdir()
     # create table
+    hashed_name_list = []
     table_file = temp_directory.joinpath(table_file_name)
     with table_file.open(mode='w') as table:
         for target_file in target_file_list:
@@ -31,6 +32,13 @@ def pack(target_file_list, logger=None):
                     hashed_name.name,
                     target_file.name,
                     hashed_name.hexdigest()))
+            # duplication check
+            if hashed_name.hexdigest() in hashed_name_list:
+                logger.error('dupicated: "{0}" -> "{1}"'.format(
+                        target_file.name,
+                        hashed_name.hexdigest()))
+                continue
+            hashed_name_list.append(hashed_name.hexdigest())
             # create symbolic link
             temp_directory.joinpath(hashed_name.hexdigest()) \
                           .symlink_to(target_file.resolve())
